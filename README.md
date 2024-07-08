@@ -1,5 +1,5 @@
 # swara_player
-Simple Python app for training yourself to identify swaras in Hindustani Classical Music
+Simple Python app for training yourself to identify swaras in Indian Classical Music
 ![image](https://github.com/nkodikal-p/swara_player/assets/174972654/f45d4490-4d12-46a7-9e9c-0945dabfe55b)
 
 Enter swaras in the text box and press Play to hear the audio. Example swaras can be filled by selecting a raga from the combo-box as show in the above snip.

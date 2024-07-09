@@ -34,8 +34,10 @@ def play_game():
         #print(score)
         return ' '.join(score)
 
-    gamepoints=0
-    totpoints = read_or_initialize_points(points_file)
+    
+    gamepoints=0 # initial gamepoints for score keeping
+    points_dict = read_or_initialize_points(points_file) # read points from file
+    onaroll = 0 # initial onaroll counter
     while True:
         score = generate_score(swaras, mode)
         play_score(score, 4, 35, 0, 'piano')
@@ -51,21 +53,36 @@ def play_game():
         # Calculate score
         if guess == score[:-2]: # remove last ' -' from score
             # count of characters without spaces
-            gamepoints += len(guess.replace(" ", ""))*10
+            gamepoints += len(guess.replace(" ", ""))*10 # 10 points per correct character
             print(f"Correct! Score={gamepoints}")
+            onaroll += 1
+            if onaroll == 5:
+                gamepoints += 200 # grant extra points for 5 correct in a row
+                print("Five correct in a row! You're on a roll! +200 points")
+                onaroll = 0 # reset onaroll counter
+
         else:
+            onaroll = 0 # reset onaroll counter
             print("Incorrect! The correct answer is: ", score[:-2])
             # count how many characters were guessed correctly
             same_chars = sum([1 for char in guess.replace(" ", "") if char in score.replace(" ", "")])
-            gamepoints += same_chars*10
+            gamepoints += same_chars*10 # 10 points per correct character
             print(f'{same_chars}/{len(guess.replace(" ", ""))} swaras were correct. Score = {gamepoints}')
-
         print("")
         play = input("Press Enter to play again or 'q' to quit: ")
         if play == 'q':
-            totpoints += gamepoints
-            update_points(points_file,totpoints)
+            points_dict['run_total_score']  += gamepoints
+            
             print("")
             print("Thanks for playing Name that Swara!")
-            print(f"Score for this game {gamepoints}. Running total score {totpoints}")
+            print("")
+            # check if gamepoints > highscore
+            if gamepoints > points_dict['game_high_score']:
+                points_dict['game_high_score'] = gamepoints
+                print("New high score!")
+            print(f"Score for this game {gamepoints}. \nHighest game score {points_dict['game_high_score']}.\nRunning total score {points_dict['run_total_score']}.")
+            print("")
+
+            update_points(points_file,points_dict) # update points in file
+            
             return None
